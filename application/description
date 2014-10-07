@@ -1,0 +1,44 @@
+Sub-directorio por cada nueva aplicacion
+
+config: configuracion de la aplicacion
+    app_config: configuracion general de las aplicaciones. (Cuando hay varias aplicaciones)
+   -cumpleanios_config
+   -efemerides_config
+   -sait_config
+   
+controllers: controladores de las aplicaciones.
+    app_controllers: clases controladores generales. (Cuando hay varias aplicaciones)
+   -cumpleanios_controllers
+   -efemerides_controllers
+   -sait_controllers
+      
+handlers
+    app_handles
+   -cumpleanios_handles
+   -efemerides_handles
+   -sait_handles
+
+libs
+   
+
+models
+    app_models
+
+views
+    app_view
+    
+    
+application
+    app
+        config
+        controllers
+        handles
+        models
+    libs
+    database
+        parameters
+    
+    
+    
+    
+

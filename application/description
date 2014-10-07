@@ -1,42 +1,12 @@
-Sub-directorio por cada nueva aplicacion
-
-config: configuracion de la aplicacion
-    app_config: configuracion general de las aplicaciones. (Cuando hay varias aplicaciones)
-   -cumpleanios_config
-   -efemerides_config
-   -sait_config
-   
-controllers: controladores de las aplicaciones.
-    app_controllers: clases controladores generales. (Cuando hay varias aplicaciones)
-   -cumpleanios_controllers
-   -efemerides_controllers
-   -sait_controllers
-      
-handlers
-    app_handles
-   -cumpleanios_handles
-   -efemerides_handles
-   -sait_handles
-
-libs
-   
-
-models
-    app_models
-
-views
-    app_view
-    
-    
-application
-    app
-        config
-        controllers
-        handles
-        models
-    libs
-    database
-        parameters
+application: framework
+    app : codigo de la aplicacion (nombre del proyecto app_nombre. ej: app_cumpleanios, app_efemerides)
+        config: archivo de configuracion de la aplicacion
+        controllers: archivos controladores (ej: cumpleaniosControllers)
+        handles: archivo principal(opcional: secundario, ej:handle.php, secundary.php)
+        models: conexiones personalizadas, logica de negocio
+    libs: librerias (email, util, etc.)
+    database: gestion de bases de datos.
+        parameters: parametros de configuracion de las distintas base de datos
     
     
     

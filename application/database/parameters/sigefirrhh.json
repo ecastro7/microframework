@@ -1,0 +1,7 @@
+{
+	"host": "192.168.3.139",
+	"user": "postgres",
+	"pass": "..*t3l35ur*..",
+	"port": "5432",
+	"dbname": "sait"
+}

@@ -7,17 +7,31 @@ class DBLayer {
 	private $params;
 	private static $_con;
 
-	private function __construct($provider) {
+	private function __construct($provider, $options) {
+            echo "paso";
+            if (file_exists("'".$options.".json'") or die("Unable to open file!") ) {
+                $paramDB = $this->setOptions($options);
 		if (!class_exists($provider)) {
-			throw new Exception("El proveedor especificado no ha sido implentado o añadido.");
+			throw new Exception("El proveedor indicado no existe");
 		}
 		$this->provider = new $provider;
 		$this->provider->connect("localhost", "usuarioBaseDatos", "tuPassword", "tuBaseDatos");
 		if (!$this->provider->isConnected()) {
 			/*Controlar error de conexion*/
 		}
+            } else {
+                
+            }
 	}
-
+        
+        public function setOptions($options) {
+            $str_datos = file_get_contents("'".$options.".json'");
+            $datos = json_decode($str_datos,true);
+            var_dump($datos);
+            die;
+            return $datos;
+        }
+        
 	public static function getConnection($provider) {
 		if (self::$_con) {
 			return self::$_con;

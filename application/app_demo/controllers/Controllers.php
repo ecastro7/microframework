@@ -9,5 +9,7 @@ namespace app_demo\controllers;
  */
 class Controllers {
     //put your code here
-    
+    protected function ($param) {
+        
+    }
 }

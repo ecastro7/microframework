@@ -1,6 +1,12 @@
 <?php
 
-namespace database;
+namespace application\database\manager;
+
+require (getcwd().'/application/database/manager/PostgreProvider.php');
+
+require_once(getcwd().'/application/loading.php');
+
+use application\database\manager\PostgreProvider as PostgreProvider;
 
 class DBLayer {
 	private $provider;
@@ -8,36 +14,40 @@ class DBLayer {
 	private static $_con;
 
 	private function __construct($provider, $options) {
-            echo "paso";
-            if (file_exists("'".$options.".json'") or die("Unable to open file!") ) {
-                $paramDB = $this->setOptions($options);
-		if (!class_exists($provider)) {
-			throw new Exception("El proveedor indicado no existe");
+            echo '--'.\PostgreProvider::$vars.'--';
+//            echo getcwd().'/application/database/manager/PostgreProvider.php';
+//            print_r(get_declared_classes());
+            $path = getcwd()."/application/database/manager/".$options.".json";
+            if (is_readable($path) or die("Unable to open file!") ) {
+                $paramDB = $this->setOptions($path);
+                print_r(__NAMESPACE__.'\\'.$provider."\n");
+		if (!class_exists(__NAMESPACE__.'\\'.$provider)) {
+                    trigger_error("No es posible cargar la clase: $provider", E_USER_WARNING);
+                    throw new Exception("El proveedor indicado no existe");
 		}
 		$this->provider = new $provider;
-		$this->provider->connect("localhost", "usuarioBaseDatos", "tuPassword", "tuBaseDatos");
+		$this->provider->connect($paramDB);
+                print_r(!$this->provider->isConnected());
 		if (!$this->provider->isConnected()) {
 			/*Controlar error de conexion*/
 		}
             } else {
-                
+                /*Gestionar error de lectura de archivo*/
             }
 	}
         
-        public function setOptions($options) {
-            $str_datos = file_get_contents("'".$options.".json'");
+        public function setOptions($path) {
+            $str_datos = file_get_contents($path);
             $datos = json_decode($str_datos,true);
-            var_dump($datos);
-            die;
             return $datos;
         }
         
-	public static function getConnection($provider) {
+	public static function getConnection($provider, $options) {
 		if (self::$_con) {
 			return self::$_con;
 		} else {
 			$class = __CLASS__;
-			self::$_con = new $class($provider);
+			self::$_con = new $class($provider, $options);
 			return self::$_con;
 		}
 	}

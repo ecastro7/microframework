@@ -1,13 +1,12 @@
 <?php 
 
-namespace database;
-
+namespace application\database\manager;
 
 abstract class DBAbstractModel {
 	#Guarda internamente el objeto de conexión
 	protected $resource;
 	#Se conecta según los datos especificados
-	public abstract function connect($host, $user, $pass, $dbname);
+	public abstract function connect($param);
 	#Obtiene el número del error
 	public abstract function getErrorNo();
 	#Obtiene el texto del error

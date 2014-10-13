@@ -1,9 +1,10 @@
 <?php
 
-namespace app_demo\handlers;
+namespace application\app_demo\handlers;
 
-use app_demo\controllers\BaseController as Base;
+require (getcwd().'/application/app_demo/controllers/NewsController.php');
+
+use application\app_demo\controllers\NewsController as News;
 
 $today = date('d/m/y');
-echo "hola";
-Base::listadoNews();
+News::listadoNews($today);

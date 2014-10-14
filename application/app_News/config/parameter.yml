@@ -1,0 +1,10 @@
+## YAML Template.
+---
+listEmail:
+    to:
+        eduard:     ecastro
+        lyzmar:     lpadilla
+        jhoan:      jvalera
+        jennifer:   jzambrano
+        johann:     jozerpa
+    

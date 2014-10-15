@@ -1,10 +1,10 @@
 <?php
 
-namespace application\database\manager;
-
-require (getcwd().'/application/database/manager/DBAbstractModel.php');
-
-//require '/home/ecastro/TELESUR/composer/microframework/application/database/manager/DBAbstractModel.php';
+//namespace application\database\manager;
+//
+//require (getcwd().'/application/database/manager/DBAbstractModel.php');
+//
+////require '/home/ecastro/TELESUR/composer/microframework/application/database/manager/DBAbstractModel.php';
 
 
 class PostgreProvider extends DBAbstractModel {

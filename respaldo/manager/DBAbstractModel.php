@@ -1,6 +1,6 @@
 <?php 
 
-namespace application\database\manager;
+//namespace application\database\manager;
 
 abstract class DBAbstractModel {
 	#Guarda internamente el objeto de conexión

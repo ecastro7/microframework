@@ -1,6 +1,5 @@
 <?php
 
-namespace application\database\manager;
 
 require (getcwd().'/application/database/manager/PostgreProvider.php');
 

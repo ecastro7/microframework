@@ -2,10 +2,11 @@
 
 namespace application\app_aniversario\models {
 
-    require (getcwd() . '/application/database/manager/DBLayer.php');
-    require (getcwd() . '/application/app_aniversario/models/AppModel.php');
+    require ('application/database/manager/DBLayer.php');
+    require ('application/app_aniversario/models/AppModel.php');
 
     use application\database\manager\DBLayer as DBLayer;
+    use application\app_aniversario\models\AppModel as AppModel;
 
     class AppManager {
 
@@ -13,19 +14,19 @@ namespace application\app_aniversario\models {
             list($year, $month, $day) = explode('/', $fecha);
             $conexion = new DBLayer("sigefirrhh");
             $conexion->getConnection();
-            $result = $conexion->execute(" SELECT a.cedula, a.primer_nombre, a.primer_apellido, date_part('day',c.fecha_ingreso) as dia, 
-date_part('month',c.fecha_ingreso) as mes, b.nombre as dependencia 
-from personal a, trabajador c, dependencia b 
-where b.id_dependencia = c.id_dependencia and a.id_personal = c.id_personal and c.estatus = 'A' 
-and date_part('day',c.fecha_ingreso) = ? and date_part('month',c.fecha_ingreso) = ?", array($day, $month));
+            $result = $conexion->execute(AppModel::queryListAniversario(), array($day, $month, $year));
+            print_r($result);
             return $result;
         }
-        
-        public static function renderView($result) {
-            $header = file_get_contents(getcwd() . '/application/app_aniversario/views/header.inc');
-            $body = self::getBody($result);
-            $footer = file_get_contents(getcwd() . '/application/app_aniversario/views/footer.inc');
-            $render_html = $header . $body . $footer;
+
+        public static function renderView($result, $type) {
+            $render_html = NULL;
+            if (count($result) != 0) {
+                $header = file_get_contents(dirname(__DIR__) . '/views/header.inc');
+                $body = self::getBody($result, $type);
+                $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
+                $render_html = $header . $body . $footer;
+            }
             return $render_html;
         }
 
@@ -40,6 +41,13 @@ and date_part('day',c.fecha_ingreso) = ? and date_part('month',c.fecha_ingreso) 
                          </tr>";
             }
             return $body;
+        }
+        
+        public static function renderDinamicView($html, $data) {
+            foreach ($data as $clave=>$valor) {
+                $html = str_replace('{'.$clave.'}', $valor, $html);
+            }
+            return $html;
         }
 
     }

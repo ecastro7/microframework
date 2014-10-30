@@ -2,7 +2,7 @@
 
 namespace application\database\manager {
 
-    require (getcwd() . '/application/database/manager/DBAbstractModel.php');
+    require ('application/database/manager/DBAbstractModel.php');
 
     class PostgresProvider extends DBAbstractModel {
 

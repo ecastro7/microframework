@@ -1,8 +1,7 @@
 <?php
 
 namespace application\database\manager {
-
-    require (getcwd() . '/application/database/manager/PostgresProvider.php');
+    require ('application/database/manager/PostgresProvider.php');
 
     class DBLayer {
 
@@ -16,7 +15,7 @@ namespace application\database\manager {
         }
 
         public function setConfiguration() {
-            $path = getcwd() . "/application/database/parameters/" . $this->file . ".json";
+            $path = dirname(__DIR__) . "/parameters/" . $this->file . ".json";
             if (is_readable($path) or die("Unable to open file!")) {
                 $str_datos = file_get_contents($path);
                 $datos = json_decode($str_datos, true);

@@ -17,11 +17,14 @@ namespace application\database\manager {
             return $this->resource;
         }
 
-        public static function getConnection($options) {
+        public static function getConnection($options, $flag) {
+
+            if (!$flag) {
+                self::$_instance = NULL;
+            }
             if (!isset(self::$_instance)) {
                 self::$_instance = new self($options);
             }
-
             return self::$_instance;
         }
 
@@ -42,12 +45,17 @@ namespace application\database\manager {
             $stat = pg_connection_status($this->resource);
             if ($stat === PGSQL_CONNECTION_OK) {
                 $status = TRUE;
+//                echo "\nstatus: " . $stat ."\n";
             }
             return $status;
         }
 
         public function escape($var) {
             return pg_escape_string($var);
+        }
+
+        public function disconnect() {
+            pg_close($this->resource);
         }
 
     }

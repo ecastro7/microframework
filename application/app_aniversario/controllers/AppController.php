@@ -13,46 +13,77 @@ namespace application\app_aniversario\controllers {
             return Manager::SearchNews($fecha);
         }
 
-        public static function renderView($result, $imgURL, $type) {
-            $imgURL = unserialize($imgURL);
+        public static function getListEmail() {
+            return Manager::SearchListEmail();
+        }
+
+        public static function renderInfo($result, $imgURL, $type, $subject, $Emails) {
+            $img = unserialize($imgURL);
             if ($type == "INDIVIDUAL") {
-                $html = self::renderViewIndividual($result);
+                $html = self::renderInfoIndividual($result, $img, $type, $subject, $Emails);
             } else {
-                $html = self::renderViewGeneral($result);
+                $html = self::renderInfoGeneral($result, $img, $type, $subject);
             }
             return $html;
         }
 
-        public static function renderViewIndividual($param) {
-            $img_path = $imgURL["imgURL"]["individual"];
-            foreach ($array as $value) {
-                $html = Manager::renderView($result, $type);
-                $diccionario = array('img_path' => $img_path);
-                $html[] = Manager::renderDinamicView($html, $diccionario);
+        private static function renderInfoIndividual($result, $img, $type, $subject, $Emails) {
+            $img_path = $img["imgURL"]["individual"];
+            $html = array();
+            $render = array();
+            $diccionario = array(
+                'img_path' => $img_path,
+                'type_title' => "Felicitaciones" . $subject,
+                'type_table' => "individual"
+            );
+            foreach ($result as $key => $obj) {
+                $html = Manager::renderView(array($obj), $type);
+                $render[$key]["html"] = Manager::renderDinamicView($html, $diccionario);
+                $render[$key]["subject"] = $subject . " " . $obj->primer_nombre . " " . $obj->primer_apellido;
+                $render[$key]["to"] = self::getEmail($obj, $Emails);
             }
-            return $html;
+            return $render;
         }
 
-        public static function renderViewGeneral($param) {
-            if ($type == "GENERAL" && count($result) > 14) {
-                $img_path = $imgURL["imgURL"]["generalDoble"];
+        private static function renderInfoGeneral($result, $img, $type, $subject) {
+            if ($type == "GENERAL" && count($result) > 8) {
+                $img_path = $img["imgURL"]["generalDoble"];
+                $type_table = "generalDoble";
             } else {
-                $img_path = $imgURL["imgURL"]["general"];
+                $img_path = $img["imgURL"]["general"];
+                $type_table = "general";
             }
-            $diccionario = array('img_path' => $img_path);
+            $diccionario = array(
+                'img_path' => $img_path,
+                'type_title' => "Felicitaciones",
+                'type_table' => $type_table
+            );
+            $render = array();
             $html = Manager::renderView($result, $type);
-            $html[] = Manager::renderDinamicView($html, $diccionario);
-            return $html;
+            $render[0]["html"] = Manager::renderDinamicView($html, $diccionario);
+            $render[0]["subject"] = $subject;
+            $render[0]["to"] = "ecastro@telesurtv.net";
+            return $render;
         }
 
-        public static function EnviarMail($content, $options) {
+        private static function getEmail($obj, $Emails) {
+            foreach ($Emails as $mail) {
+                if ($mail->cedula == $obj->cedula) {
+//                    $to = $mail->username . "@telesurtv.net";
+                    $to = "ecastro@telesurtv.net";
+                }
+            }
+            return $to;
+        }
+
+        public static function EnviarMail($parametros) {
             $mail = new \htmlMimeMail5();
             $mail->setFrom("ecastro@telesurtv.net");
-            $mail->setSubject($options["subject"]);
-            $mail->setText($options["subject"]);
-            $mail->setHtml($content);
+            $mail->setSubject($parametros["subject"]);
+            $mail->setText($parametros["subject"]);
+            $mail->setHtml($parametros["html"]);
             $mail->setSMTPParams('correo.telesurtv.net', 25, null, true, 'aplicaciones@telesurtv.net', '4pl1c4c10n35');
-            $mail->send($options["to"], 'smtp');
+            $mail->send(array($parametros["to"]), 'smtp');
         }
 
     }

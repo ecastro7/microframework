@@ -32,6 +32,8 @@ namespace application\database\manager {
         public abstract function isConnected();
 
         public abstract function escape($var);
+        
+        public abstract function disconnect();
     }
 
 }

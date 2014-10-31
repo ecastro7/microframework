@@ -18,35 +18,34 @@ $list_generator = array(TODAY, TOMORROW);
         /**
          * Obtengo los aniversarios segun la fecha pasada por parametros
          */
+        $array_response = array();
         $arrayResult = App::getAniversario($fecha);
         if (empty($arrayResult)) {
             /**
              * No hay aniversario
              */
-            $parametros = array(
-                "subject" => NOT_ANIVERSARIO,
-                "to" => array(DESTINO_APLICACIONES)
-            );
+            $array_response["subject"] = NOT_ANIVERSARIO;
+            $array_response["to"] = array(DESTINO_APLICACIONES);
+            $array_response["html"] = array();
         } else {
+            $arrayResultEmail = App::getListEmail();
             /**
              * Si hay aniversario
-             */
-            $parametros = array(
-                "subject" => SUBJECT_ANIVERSARIO,
-                "to" => array(DESTINO_TELESUR)
-            );
-            /**
+             * 
              * Segundo foreach para recorrer el array que contiene las tarjeta a enviar 
              * Envio de la tarjeta genera
              * Envio de la tarjeta individual
              * Por este metodo reutilizamos el codigo del metodo getAniversario
              */
+            $allContent = array();
             foreach ($list_tarjeta as $type) {
-                $html = App::renderView($arrayResult, URLIMG, $type);
+                $allContent[] = App::renderInfo($arrayResult, URLIMG, $type, SUBJECT_ANIVERSARIO, $arrayResultEmail);
             }
         }
-        foreach ($parametros as $key => $value) {
-             App::EnviarMail($content, $parametros);
+        foreach ($allContent as $arrayValue) {
+            foreach ($arrayValue as $parametros) {
+                App::EnviarMail($parametros);
+            }
         }
     }
 }

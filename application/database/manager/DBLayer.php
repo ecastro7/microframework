@@ -9,8 +9,12 @@ namespace application\database\manager {
         private $options = null;
         private $provider;
         private $params;
+        private static $flag = TRUE;
 
         public function __construct($file) {
+            if($this->file != $file){
+                self::$flag = FALSE;
+            }
             $this->file = $file;
         }
 
@@ -30,8 +34,7 @@ namespace application\database\manager {
                 throw new Exception("El proveedor indicado no existe");
             }
             $provider = __NAMESPACE__ . '\\' . $options["provider"];
-            $this->provider = $provider::getConnection($options);
-            print_r(!$this->provider->isConnected());
+            $this->provider = $provider::getConnection($options, self::$flag);
             if (!$this->provider->isConnected()) {
                 /* Controlar error de conexion */
             } else {

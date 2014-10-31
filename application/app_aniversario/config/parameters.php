@@ -6,12 +6,12 @@
 
 
 /** * Constantes para obtener las fecha actual y la siguiente. * */
-$today = date('Y/m/d', strtotime("-4week"));
+$today = date('Y/m/d', strtotime("2007/01/01"));
 define('TODAY', $today);
-$tomorrow = date('Y/m/d', strtotime("+1days"));
+$tomorrow = date('Y/m/d', strtotime("2008/10/01"));
 define('TOMORROW', $tomorrow);
 
-const SUBJECT_ANIVERSARIO = "NOTIFICACION DE ANIVERSARIO";
+const SUBJECT_ANIVERSARIO = "FELIZ ANIVERSARIO";
 
 const NOT_ANIVERSARIO = "NO HAY ANIVERSARIO";
 
@@ -23,8 +23,8 @@ const DESTINO_TELESUR = "ecastro@telesurtv.net";
 $imgPATH = array(
     "imgURL" => array(
         "individual" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-individual.jpg",
-        "generalDoble" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general2.jpg",
-        "general" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general1.jpg"
+        "general" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general2.jpg",
+        "generalDoble" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general1.jpg"
     )
 );
 

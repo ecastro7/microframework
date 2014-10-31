@@ -14,38 +14,67 @@ namespace application\app_aniversario\models {
             list($year, $month, $day) = explode('/', $fecha);
             $conexion = new DBLayer("sigefirrhh");
             $conexion->getConnection();
-            $result = $conexion->execute(AppModel::queryListAniversario(), array($day, $month, $year));
-            print_r($result);
+            $result = $conexion->execute(AppModel::queryListAniversario(), array($day, $month));
+//            print_r($result);
+            return $result;
+        }
+
+        public static function SearchListEmail() {
+            $conexion = new DBLayer("sait");
+            $conexion->getConnection();
+            $result = $conexion->execute(AppModel::queryListEmail());
             return $result;
         }
 
         public static function renderView($result, $type) {
-            $render_html = NULL;
-            if (count($result) != 0) {
-                $header = file_get_contents(dirname(__DIR__) . '/views/header.inc');
+            $header = file_get_contents(dirname(__DIR__) . '/views/header.inc');
+            /**
+             * Si el tipo de tarjeta es general y hay mas de 8 aniversario
+             * se cambia la tarjeta (tarjeta doble)
+             */
+            if ($type == "GENERAL" && count($result) > 8) {
+                $type = TRUE;
                 $body = self::getBody($result, $type);
-                $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
-                $render_html = $header . $body . $footer;
+            } else {
+                $body = self::getBody($result);
             }
+            $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
+            $render_html = $header . $body . $footer;
             return $render_html;
         }
 
-        public static function getBody($result) {
-            $body = "";
-            foreach ($result as $value) {
-                $body .= "<tr>
-                            <td>
-                                <span class='fecha'><strong>" . $value->primer_nombre . " " . $value->primer_apellido . "</strong></span><br/>
-                                <span class='descripcion'>" . $value->dependencia . "</span>
-                            </td>
-                         </tr>";
+        public static function getBody($result, $type = FALSE) {
+            $nroRows = count($result);
+            if (count($result) % 2 != 0) {
+                $nroRows += 1;
             }
+            $nCols = 1;
+            /**
+             * Si $type es igual a general mayor de 8 aniversarios
+             * dividir los datos en dos columnas
+             */
+            if ($type) {
+                $nCols = 2;
+            }
+            $body = "";
+            for ($index = 0; $index < $nroRows; $index+=$nCols) {
+                $td = "";
+                for ($i = $index; $i < $index + $nCols; $i++) {
+                    $td .= "<td>
+                                <span class='nombre'><strong>" . $result[$i]->primer_nombre . " " . $result[$i]->primer_apellido . "</strong></span><br/>
+                                <span class='dependencia'>" . $result[$i]->dependencia . "</span><br/>
+                                <span class='anios'><strong>" . $result[$i]->dif_anios ." " . utf8_decode("AÑOS") ."</strong></span>
+                            </td>";
+                }
+                $body .= "<tr>" . $td . "</tr>";
+            }
+
             return $body;
         }
-        
+
         public static function renderDinamicView($html, $data) {
-            foreach ($data as $clave=>$valor) {
-                $html = str_replace('{'.$clave.'}', $valor, $html);
+            foreach ($data as $clave => $valor) {
+                $html = str_replace('{' . $clave . '}', $valor, $html);
             }
             return $html;
         }

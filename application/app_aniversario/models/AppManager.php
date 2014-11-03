@@ -32,10 +32,14 @@ namespace application\app_aniversario\models {
              * Si el tipo de tarjeta es general y hay mas de 8 aniversario
              * se cambia la tarjeta (tarjeta doble)
              */
-            if ($type == "GENERAL" && count($result) > 8) {
-                $type = TRUE;
+            if ($type == "GENERAL" && (count($result) > 8 && count($result) < 14)) {
+                $nCols = 3;
                 $body = self::getBody($result, $type);
+            } elseif ($type == "GENERAL" && count($result) > 14) {
+                $nCols = 2;
+                $body = self::getBody($result);
             } else {
+                $nCols = 1;
                 $body = self::getBody($result);
             }
             $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
@@ -43,18 +47,10 @@ namespace application\app_aniversario\models {
             return $render_html;
         }
 
-        public static function getBody($result, $type = FALSE) {
+        public static function getBody($result, $nCols) {
             $nroRows = count($result);
             if (count($result) % 2 != 0) {
                 $nroRows += 1;
-            }
-            $nCols = 1;
-            /**
-             * Si $type es igual a general mayor de 8 aniversarios
-             * dividir los datos en dos columnas
-             */
-            if ($type) {
-                $nCols = 2;
             }
             $body = "";
             for ($index = 0; $index < $nroRows; $index+=$nCols) {

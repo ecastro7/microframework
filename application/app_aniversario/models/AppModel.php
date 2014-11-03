@@ -21,9 +21,13 @@ class AppModel {
         $query = "SELECT a.cedula, a.primer_nombre, a.primer_apellido, date_part('day',c.fecha_ingreso) as dia, 
 	date_part('month',c.fecha_ingreso) as mes, date_part('year',c.fecha_ingreso) as anio, 
 	b.nombre as dependencia, EXTRACT(YEAR FROM age(timestamp 'now()',date(c.fecha_ingreso) ) ) as dif_anios
-	from personal a, trabajador c, dependencia b 
-	where b.id_dependencia = c.id_dependencia and a.id_personal = c.id_personal and c.estatus = 'A' 
-	and date_part('day',c.fecha_ingreso) = ? and date_part('month',c.fecha_ingreso) = ? ";
+	FROM personal a, trabajador c, dependencia b 
+	WHERE b.id_dependencia = c.id_dependencia
+		AND a.id_personal = c.id_personal 
+		AND c.estatus = 'A' 
+		AND date_part('day',c.fecha_ingreso) = ?
+		AND date_part('month',c.fecha_ingreso) = ?
+	ORDER BY dependencia DESC";
         return $query;
     }
 

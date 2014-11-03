@@ -6,9 +6,9 @@
 
 
 /** * Constantes para obtener las fecha actual y la siguiente. * */
-$today = date('Y/m/d', strtotime("2007/01/01"));
+$today = date('Y/m/d', strtotime("2007/09/01"));
 define('TODAY', $today);
-$tomorrow = date('Y/m/d', strtotime("2008/10/01"));
+$tomorrow = date('Y/m/d', strtotime("2008/01/01"));
 define('TOMORROW', $tomorrow);
 
 const SUBJECT_ANIVERSARIO = "FELIZ ANIVERSARIO";

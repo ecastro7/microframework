@@ -16,14 +16,14 @@
         <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
         <style type="text/css">
             body{
-                width: 800px;
-                height: 630px;
+                width: 900px;
+                height: 600px;
                 font-size: 12px !important;
             }
 
-            div{
-                width: 792px;
-                height: 612px;
+            div.imagen {
+                width: 900px;
+                height: 600px;
                 top:0px;
                 left:0px;
                 position:relative;
@@ -33,43 +33,22 @@
             .table_generalDoble{
                 border-collapse:collapse;
                 position: absolute;
-                left: 110px;
+                left: 30px;
                 top: 130px;
                 text-align: center;
                 z-index: 2;
-                width:700px; 
+                width:864px; 
                 height:350px;
             }
 
-            .table_general{
-                border-collapse:collapse;
-                position: absolute;
-                left: 192px;
-                top: 200px;
-                text-align: center;
-                font-family: Arial;
-                z-index: 2;
-                width:380px; 
-                height:260px;
-            }
-
-            .table_individual{
-                border-collapse:collapse;
-                position: absolute;
-                left: 192px;
-                top: 200px;
-                text-align: center;
-                font-family: Arial;
-                z-index: 2;
-                width:380px; 
-                height:260px;
-            }
-
-            tr, td, span, strong {
-                padding: 0;
-                text-decoration: none !important;
+            strong {
                 font-family: helvetica,sans-serif;
                 color: #f2e3e3 !important;
+            }
+
+            td {
+                /*padding: 2px 0px !important;*/
+                width: 280px !important;
             }
 
             .img_general, .img_generalDoble {
@@ -80,13 +59,13 @@
                 height: 295px !important;
                 width: 442px !important;
             } 
-            
-            .dependencia, .anios, .nombre {
-                font-size: 12px !important;
+
+            .nombre {
+                font-size: 10px !important;
             }
-            
-            table, td, tr {
-                border: 1px solid transparent;
+
+            .titulo {
+                font-size: 12px;
             }
         </style>
     </head>

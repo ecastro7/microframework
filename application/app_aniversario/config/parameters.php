@@ -23,8 +23,8 @@ const DESTINO_TELESUR = "ecastro@telesurtv.net";
 $imgPATH = array(
     "imgURL" => array(
         "individual" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-individual.jpg",
-        "general" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general2.jpg",
-        "generalDoble" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general1.jpg"
+        "general" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general1.jpg",
+        "generalDoble" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-general2.jpg"
     )
 );
 

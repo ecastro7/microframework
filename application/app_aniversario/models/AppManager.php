@@ -32,19 +32,71 @@ namespace application\app_aniversario\models {
              * Si el tipo de tarjeta es general y hay mas de 8 aniversario
              * se cambia la tarjeta (tarjeta doble)
              */
-            if ($type == "GENERAL" && (count($result) > 8 && count($result) < 14)) {
-                $nCols = 3;
-                $body = self::getBody($result, $type);
-            } elseif ($type == "GENERAL" && count($result) > 14) {
+            $arrayDep = self::getDependencia($result);
+            if ($type == "GENERAL" and count($arrayDep) > 8 and count($result) < 24 ) {
                 $nCols = 2;
-                $body = self::getBody($result);
+                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
+            } elseif ($type == "GENERAL" and count($arrayDep) > 8) {
+                $nCols = 3;
+                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
+            } elseif ($type == "GENERAL" && count($arrayDep) <= 8) {
+                $nCols = 2;
+                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
             } else {
                 $nCols = 1;
-                $body = self::getBody($result);
+                $body = self::getBody($result, $nCols);
             }
             $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
             $render_html = $header . $body . $footer;
             return $render_html;
+        }
+
+        public static function getBodyGeneral($result, $nCols, $arrayDep) {
+            $nroRows = count($arrayDep);
+            if ($nroRows % 2 != 0) {
+                $nroRows += 1;
+            }
+            $body = "";
+            $pointerDep = 0;
+            /**
+             * Numero de filas
+             */
+            for ($row = 1; $row < $nroRows; $row++) {
+                echo "\n***************************************fila[$row]********pointer entro $pointerDep****************************\n";
+                /**
+                 * Numero de columnas
+                 */
+                $content = "<tr>";
+                for ($col = 1; $col <= $nCols; $col++) {
+                    $td = "<td><span class='titulo'><strong>$arrayDep[$pointerDep]</strong></span></br>";
+                    $span = "";
+                    $span .= self::getDatos($pointerDep, $arrayDep, $result);
+                    $pointerDep++;
+                    $content .= $td . $span . "</td>";
+                }
+                $body .= $content . "</tr></br>";
+                print_r($body);
+                echo "\n*****************************pointer salio $pointerDep*******************************************\n\n\n\n\n";
+            }
+            return $body;
+        }
+
+        public static function getDatos($pointerDep, $arrayDep, $result) {
+            $span = "";
+            if ($pointerDep < count($arrayDep)) {
+                $span = self::getListAniDep($result, $arrayDep[$pointerDep]);
+            }
+            return $span;
+        }
+
+        public static function getListAniDep($list, $dependencia) {
+            $result = "";
+            for ($i = 0; $i < count($list); $i++) {
+                if ($list[$i]->dependencia == $dependencia) {
+                    $result .= "<span class='nombre'><strong>" . $list[$i]->primer_nombre . ' ' . $list[$i]->primer_apellido . "</strong></span></br>";
+                }
+            }
+            return $result;
         }
 
         public static function getBody($result, $nCols) {
@@ -54,15 +106,15 @@ namespace application\app_aniversario\models {
             }
             $body = "";
             for ($index = 0; $index < $nroRows; $index+=$nCols) {
-                $td = "";
+                $td = "<td>
+                        <span class='titulo'>" . $result[$index]->dependencia . "</strong></span></br>";
                 for ($i = $index; $i < $index + $nCols; $i++) {
-                    $td .= "<td>
-                                <span class='nombre'><strong>" . $result[$i]->primer_nombre . " " . $result[$i]->primer_apellido . "</strong></span><br/>
-                                <span class='dependencia'>" . $result[$i]->dependencia . "</span><br/>
-                                <span class='anios'><strong>" . $result[$i]->dif_anios ." " . utf8_decode("AÑOS") ."</strong></span>
-                            </td>";
+                    $td .= "<span class='nombre'>
+                                <strong>" . $result[$i]->primer_nombre . " " . $result[$i]->primer_apellido . " " . $result[$i]->dif_anios . " " . utf8_decode("AÑOS") .
+                            "</strong>
+                            </span><br/>";
                 }
-                $body .= "<tr>" . $td . "</tr>";
+                $body .= "<tr>" . $td . "</td></tr></br>";
             }
 
             return $body;
@@ -73,6 +125,16 @@ namespace application\app_aniversario\models {
                 $html = str_replace('{' . $clave . '}', $valor, $html);
             }
             return $html;
+        }
+
+        public static function getDependencia($result) {
+            $buffer = array();
+            $i = 0;
+            foreach ($result as $value) {
+                $buffer[$i] = $value->dependencia;
+                $i++;
+            }
+            return array_values(array_unique($buffer));
         }
 
     }

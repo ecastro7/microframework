@@ -9,8 +9,8 @@ namespace application\app_aniversario\handlers {
 
     use application\app_aniversario\controllers\AppController as App;
 
-$list_generator = array(TODAY, TOMORROW);
-    $list_tarjeta = array("GENERAL", "INDIVIDUAL");
+$list_generator = array(TODAY);
+    $list_tarjeta = array("GENERAL");
     /**
      * Primer foreach para recorrer al array que contiene la fecha actual y la fecha posterior
      */

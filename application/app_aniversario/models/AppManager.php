@@ -27,91 +27,80 @@ namespace application\app_aniversario\models {
         }
 
         public static function renderView($result, $type) {
-            $header = file_get_contents(dirname(__DIR__) . '/views/header.inc');
             /**
              * Si el tipo de tarjeta es general y hay mas de 8 aniversario
              * se cambia la tarjeta (tarjeta doble)
              */
-            $arrayDep = self::getDependencia($result);
-            if ($type == "GENERAL" and count($arrayDep) > 8 and count($result) < 24 ) {
-                $nCols = 2;
-                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
-            } elseif ($type == "GENERAL" and count($arrayDep) > 8) {
-                $nCols = 3;
-                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
-            } elseif ($type == "GENERAL" && count($arrayDep) <= 8) {
-                $nCols = 2;
-                $body = self::getBodyGeneral($result, $nCols, $arrayDep);
+            if ($type == "GENERAL") {
+                $header = file_get_contents(dirname(__DIR__) . '/views/general/header.inc');
+                $body = self::getBodyGeneral($result);
+                $footer = file_get_contents(dirname(__DIR__) . '/views/general/footer.inc');
             } else {
-                $nCols = 1;
-                $body = self::getBody($result, $nCols);
+                $header = file_get_contents(dirname(__DIR__) . '/views/individual/header.inc');
+                $body = self::getBody($result);
+                $footer = file_get_contents(dirname(__DIR__) . '/views/individual/footer.inc');
             }
-            $footer = file_get_contents(dirname(__DIR__) . '/views/footer.inc');
             $render_html = $header . $body . $footer;
             return $render_html;
         }
 
-        public static function getBodyGeneral($result, $nCols, $arrayDep) {
-            $nroRows = count($arrayDep);
-            if ($nroRows % 2 != 0) {
-                $nroRows += 1;
-            }
-            $body = "";
-            $pointerDep = 0;
+        public static function getBodyGeneral($result) {
+            $arrayDep = self::getDependencia($result);
+            $nroDep = count($arrayDep);
             /**
              * Numero de filas
              */
-            for ($row = 1; $row < $nroRows; $row++) {
+            $body = "";
+            for ($row = 1; $row < $nroDep; $row++) {
+                $tr = "";
+                $tr = "<tr style=' border: 1px solid #890300 !important; color: white; background-color: #890300; padding: 5px !important;'>
+                            <td style='max-width:100%; min-width:320px; border: 1px solid #E1E1E1 !important; padding: 3px !important;'>
+                                <p style='width:100%; margin: 5px 0px !important; font-size:0.9em; font-family: 'Droid Serif', serif; color: #FFF;'>
+                                " . $arrayDep[$row] . "
+                                </p>
+                            </td>
+                        </tr>
+                        <tr style=' border: 1px solid #EAEAEA !important; font-size:0.875em;'>
+                            <td>
+                                <ul style='margin: 0px; padding: 5px;'>";
                 /**
-                 * Numero de columnas
+                 * Buscar las personas segun la dependencia
                  */
-                $content = "<tr>";
-                for ($col = 1; $col <= $nCols; $col++) {
-                    $td = "<td><span class='titulo'><strong>$arrayDep[$pointerDep]</strong></span></br>";
-                    $span = "";
-                    $span .= self::getDatos($pointerDep, $arrayDep, $result);
-                    $pointerDep++;
-                    $content .= $td . $span . "</td>";
-                }
-                $body .= $content . "</tr></br>";
+                $li = "";
+                $li .= self::getListAniDep($result, $arrayDep[$row]);
+
+                $body .= $tr . $li . "</ul>
+                                    </td>
+                                </tr>
+                                <tr style='width:100%; background-color: #DDDDDD'>
+                                    <td style='max-width:100%; min-width:320px; padding:2px 2px 5px 2px;'></td>
+                                </tr>";
             }
             return $body;
-        }
-
-        public static function getDatos($pointerDep, $arrayDep, $result) {
-            $span = "";
-            if ($pointerDep < count($arrayDep)) {
-                $span = self::getListAniDep($result, $arrayDep[$pointerDep]);
-            }
-            return $span;
         }
 
         public static function getListAniDep($list, $dependencia) {
             $result = "";
             for ($i = 0; $i < count($list); $i++) {
                 if ($list[$i]->dependencia == $dependencia) {
-                    $result .= "<span class='nombre'><strong>" . $list[$i]->primer_nombre . ' ' . $list[$i]->primer_apellido . "</strong></span></br>";
+                    $result .= "<li style='position: relative; display: block; padding: 10px 15px; margin-bottom: -2px; background-color: #FFF; border: 1px solid #DDD;'>"
+                            . $list[$i]->primer_nombre . ' ' . $list[$i]->primer_apellido . " -  " . $list[$i]->dif_anios . " A&Ntilde;O(S)</li>";
                 }
             }
             return $result;
         }
 
-        public static function getBody($result, $nCols) {
+        public static function getBody($result) {
             $nroRows = count($result);
-            if (count($result) % 2 != 0) {
-                $nroRows += 1;
-            }
             $body = "";
-            for ($index = 0; $index < $nroRows; $index+=$nCols) {
-                $td = "<td>
-                        <span class='titulo'>" . $result[$index]->dependencia . "</strong></span></br>";
-                for ($i = $index; $i < $index + $nCols; $i++) {
-                    $td .= "<span class='nombre'>
-                                <strong>" . $result[$i]->primer_nombre . " " . $result[$i]->primer_apellido . " " . $result[$i]->dif_anios . " " . utf8_decode("AÑOS") .
-                            "</strong>
-                            </span><br/>";
-                }
-                $body .= "<tr>" . $td . "</td></tr></br>";
+            for ($index = 0; $index < $nroRows; $index++) {
+                $td = "<td>";
+                $td .= "<p style='margin: 0px 0px 4px 0px; font-size:14px'><span><strong>" 
+                        . $result[$index]->primer_nombre . " " . $result[$index]->primer_apellido . " - " . $result[$index]->dif_anios . " " . utf8_decode("AÑO") . "(S)" .
+                        "</strong></span><p style='margin: 0;font-size:12px'>
+                        <span>" . $result[$index]->dependencia .
+                        "</span></td>";
+                $body .= "<tr>" . $td . "</tr></br>";
             }
 
             return $body;

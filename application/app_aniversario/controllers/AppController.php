@@ -22,7 +22,7 @@ namespace application\app_aniversario\controllers {
             if ($type == "INDIVIDUAL") {
                 $html = self::renderInfoIndividual($result, $img, $type, $subject, $Emails);
             } else {
-                $html = self::renderInfoGeneral($result, $img, $type, $subject);
+                $html = self::renderInfoGeneral($result, $type, $subject);
             }
             return $html;
         }
@@ -45,16 +45,13 @@ namespace application\app_aniversario\controllers {
             return $render;
         }
 
-        private static function renderInfoGeneral($result, $img, $type, $subject) {
+        private static function renderInfoGeneral($result, $type, $subject) {
             if ($type == "GENERAL" && count($result) > 8) {
-                $img_path = $img["imgURL"]["generalDoble"];
                 $type_table = "generalDoble";
             } else {
-                $img_path = $img["imgURL"]["general"];
                 $type_table = "general";
             }
             $diccionario = array(
-                'img_path' => $img_path,
                 'type_title' => "Felicitaciones",
                 'type_table' => $type_table
             );
@@ -77,6 +74,7 @@ namespace application\app_aniversario\controllers {
         }
 
         public static function EnviarMail($parametros) {
+//            print_r($parametros);
             $mail = new \htmlMimeMail5();
             $mail->setFrom("ecastro@telesurtv.net");
             $mail->setSubject($parametros["subject"]);

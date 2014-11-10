@@ -62,7 +62,6 @@ namespace application\app_aniversario\models {
              * Numero de filas
              */
             for ($row = 1; $row < $nroRows; $row++) {
-                echo "\n***************************************fila[$row]********pointer entro $pointerDep****************************\n";
                 /**
                  * Numero de columnas
                  */
@@ -75,8 +74,6 @@ namespace application\app_aniversario\models {
                     $content .= $td . $span . "</td>";
                 }
                 $body .= $content . "</tr></br>";
-                print_r($body);
-                echo "\n*****************************pointer salio $pointerDep*******************************************\n\n\n\n\n";
             }
             return $body;
         }

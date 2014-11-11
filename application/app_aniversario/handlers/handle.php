@@ -9,7 +9,13 @@ namespace application\app_aniversario\handlers {
 
     use application\app_aniversario\controllers\AppController as App;
 
-$list_generator = array(TODAY, TOMORROW);
+    /**
+     * Lista de fechas en la cuales se enviara la notificacion
+     */
+    $list_generator = array(TODAY, TOMORROW);
+    /**
+     * Lista de tipo de notificaciones
+     */
     $list_tarjeta = array("GENERAL", "INDIVIDUAL");
     /**
      * Primer foreach para recorrer al array que contiene la fecha actual y la fecha posterior
@@ -18,8 +24,11 @@ $list_generator = array(TODAY, TOMORROW);
         /**
          * Obtengo los aniversarios segun la fecha pasada por parametros
          */
-        $array_response = array();
         $arrayResult = App::getAniversario($fecha);
+        /**
+         * Esta lista contiene los datos que seran enviados por correo
+         */
+        $array_response = array();
         if (empty($arrayResult)) {
             /**
              * No hay aniversario
@@ -28,6 +37,9 @@ $list_generator = array(TODAY, TOMORROW);
             $array_response["to"] = array(DESTINO_APLICACIONES);
             $array_response["html"] = array();
         } else {
+            /**
+             * Obtener un listado de todos los email de los trabajadores del canal
+             */
             $arrayResultEmail = App::getListEmail();
             /**
              * Si hay aniversario
@@ -42,6 +54,9 @@ $list_generator = array(TODAY, TOMORROW);
                 $allContent[] = App::renderInfo($arrayResult, URLIMG, $type, SUBJECT_ANIVERSARIO, $arrayResultEmail);
             }
         }
+        /**
+         * Enviar notificaciones via email
+         */
         foreach ($allContent as $arrayValue) {
             foreach ($arrayValue as $parametros) {
                 App::EnviarMail($parametros);

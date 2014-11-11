@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace application\app_aniversario\models;
 
 /**
@@ -15,8 +9,10 @@ namespace application\app_aniversario\models;
  */
 class AppModel {
 
-    //put your code here
-
+    /**
+     * query que lista los aniversario
+     * @return string
+     */
     static function queryListAniversario() {
         $query = "SELECT a.cedula, a.primer_nombre, a.primer_apellido, date_part('day',c.fecha_ingreso) as dia, 
 	date_part('month',c.fecha_ingreso) as mes, date_part('year',c.fecha_ingreso) as anio, 
@@ -31,6 +27,10 @@ class AppModel {
         return $query;
     }
 
+    /**
+     * query que lista todos los email de los trabajadores
+     * @return string
+     */
     static function queryListEmail() {
         $query = "SELECT pfl.cedula, usr.username FROM usuarios.user as usr, usuarios.perfil as pfl WHERE usr.id = pfl.user_id";
         return $query;

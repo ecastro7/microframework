@@ -20,6 +20,10 @@ const DESTINO_APLICACIONES = "ecastro@telesurtv.net";
 
 const DESTINO_TELESUR = "ecastro@telesurtv.net";
 
+
+/**
+ * Constante de la tarjeta individual
+ */
 $imgPATH = array(
     "imgURL" => array(
         "individual" => "http://exwebserv.telesurtv.net/Tarjetas/reconocimiento-individual.jpg"

@@ -9,14 +9,32 @@ namespace application\app_aniversario\controllers {
 
     class AppController {
 
+        /**
+         * Obtener todos los aniversarios segun una fecha
+         * @param date $fecha
+         * @return array
+         */
         public static function getAniversario($fecha) {
             return Manager::SearchNews($fecha);
         }
 
+        /**
+         * Obtener lista de email de todos los trabajadores
+         * @return type
+         */
         public static function getListEmail() {
             return Manager::SearchListEmail();
         }
 
+        /**
+         * Renderizar la vista segun el tipo de notificacion
+         * @param array $result lista de notificaciones
+         * @param constant $imgURL path de la imagen individual
+         * @param string $type tipo de notificacion
+         * @param string $subject asunto que sera enviado por correo
+         * @param array $Emails lista de email
+         * @return mixed Notificacion rederizada
+         */
         public static function renderInfo($result, $imgURL, $type, $subject, $Emails) {
             $img = unserialize($imgURL);
             if ($type == "INDIVIDUAL") {
@@ -27,6 +45,15 @@ namespace application\app_aniversario\controllers {
             return $html;
         }
 
+        /**
+         * Renderizar la notificacion individual
+         * @param array $result
+         * @param string $img
+         * @param string $type
+         * @param string $subject
+         * @param array $Emails
+         * @return mixed
+         */
         private static function renderInfoIndividual($result, $img, $type, $subject, $Emails) {
             $img_path = $img["imgURL"]["individual"];
             $html = array();
@@ -36,6 +63,9 @@ namespace application\app_aniversario\controllers {
                 'type_title' => "Felicitaciones" . $subject,
                 'type_table' => "individual"
             );
+            /**
+             * renderizar la notificacion individual para cada trabajado de la lista $result
+             */
             foreach ($result as $key => $obj) {
                 $html = Manager::renderView(array($obj), $type);
                 $render[$key]["html"] = Manager::renderDinamicView($html, $diccionario);
@@ -45,24 +75,28 @@ namespace application\app_aniversario\controllers {
             return $render;
         }
 
+        /**
+         * Renderizar la notificacion general
+         * @param array $result
+         * @param string $type
+         * @param string $subject
+         * @return mixed
+         */
         private static function renderInfoGeneral($result, $type, $subject) {
-            if ($type == "GENERAL" && count($result) > 8) {
-                $type_table = "generalDoble";
-            } else {
-                $type_table = "general";
-            }
-            $diccionario = array(
-                'type_title' => "Felicitaciones",
-                'type_table' => $type_table
-            );
             $render = array();
             $html = Manager::renderView($result, $type);
-            $render[0]["html"] = Manager::renderDinamicView($html, $diccionario);
+            $render[0]["html"] = $html;
             $render[0]["subject"] = $subject;
             $render[0]["to"] = "ecastro@telesurtv.net";
             return $render;
         }
 
+        /**
+         * Obtener el email de los trabajadores
+         * @param object $obj contiene un aniversario
+         * @param array $Emails
+         * @return string
+         */
         private static function getEmail($obj, $Emails) {
             foreach ($Emails as $mail) {
                 if ($mail->cedula == $obj->cedula) {
@@ -73,6 +107,10 @@ namespace application\app_aniversario\controllers {
             return $to;
         }
 
+        /**
+         * Enviar correos electronicos
+         * @param array $parametros
+         */
         public static function EnviarMail($parametros) {
 //            print_r($parametros);
             $mail = new \htmlMimeMail5();

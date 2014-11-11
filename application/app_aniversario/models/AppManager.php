@@ -10,15 +10,23 @@ namespace application\app_aniversario\models {
 
     class AppManager {
 
+        /**
+         * Buscar noticias segun una fecha
+         * @param date $fecha
+         * @return array
+         */
         public static function SearchNews($fecha) {
             list($year, $month, $day) = explode('/', $fecha);
             $conexion = new DBLayer("sigefirrhh");
             $conexion->getConnection();
             $result = $conexion->execute(AppModel::queryListAniversario(), array($day, $month));
-//            print_r($result);
             return $result;
         }
 
+        /**
+         * Buscar el listado de email
+         * @return array
+         */
         public static function SearchListEmail() {
             $conexion = new DBLayer("sait");
             $conexion->getConnection();
@@ -26,16 +34,24 @@ namespace application\app_aniversario\models {
             return $result;
         }
 
+        /**
+         * renderizar la vista segun el tipo
+         * @param array $result
+         * @param string $type
+         * @return array
+         */
         public static function renderView($result, $type) {
-            /**
-             * Si el tipo de tarjeta es general y hay mas de 8 aniversario
-             * se cambia la tarjeta (tarjeta doble)
-             */
             if ($type == "GENERAL") {
+                /**
+                 * Contenido de la notificacion general
+                 */
                 $header = file_get_contents(dirname(__DIR__) . '/views/general/header.inc');
                 $body = self::getBodyGeneral($result);
                 $footer = file_get_contents(dirname(__DIR__) . '/views/general/footer.inc');
             } else {
+                /**
+                 * Contenido de la notificacion individual
+                 */
                 $header = file_get_contents(dirname(__DIR__) . '/views/individual/header.inc');
                 $body = self::getBody($result);
                 $footer = file_get_contents(dirname(__DIR__) . '/views/individual/footer.inc');
@@ -44,20 +60,21 @@ namespace application\app_aniversario\models {
             return $render_html;
         }
 
+        /**
+         * Renderizar el cuerpo de la notificacion generals
+         * @param array $result
+         * @return string
+         */
         public static function getBodyGeneral($result) {
             $arrayDep = self::getDependencia($result);
             $nroDep = count($arrayDep);
-            /**
-             * Numero de filas
-             */
             $body = "";
             for ($row = 1; $row < $nroDep; $row++) {
                 $tr = "";
                 $tr = "<tr style=' border: 1px solid #890300 !important; color: white; background-color: #890300; padding: 5px !important;'>
                             <td style='max-width:100%; min-width:320px; border: 1px solid #E1E1E1 !important; padding: 3px !important;'>
                                 <p style='width:100%; margin: 5px 0px !important; font-size:0.9em; font-family: 'Droid Serif', serif; color: #FFF;'>
-                                " . $arrayDep[$row] . "
-                                </p>
+                                " . $arrayDep[$row] . "</p>
                             </td>
                         </tr>
                         <tr style=' border: 1px solid #EAEAEA !important; font-size:0.875em;'>
@@ -66,19 +83,19 @@ namespace application\app_aniversario\models {
                 /**
                  * Buscar las personas segun la dependencia
                  */
-                $li = "";
-                $li .= self::getListAniDep($result, $arrayDep[$row]);
+                $li = "" . self::getListAniDep($result, $arrayDep[$row]);
 
-                $body .= $tr . $li . "</ul>
-                                    </td>
-                                </tr>
-                                <tr style='width:100%; background-color: #DDDDDD'>
-                                    <td style='max-width:100%; min-width:320px; padding:2px 2px 5px 2px;'></td>
-                                </tr>";
+                $body .= $tr . $li . "</ul></td></tr><tr style='width:100%; background-color: #DDDDDD'><td style='max-width:100%; min-width:320px; padding:2px 2px 5px 2px;'></td></tr>";
             }
             return $body;
         }
 
+        /**
+         * Obtener una aniversario segun la dependencia
+         * @param array $list
+         * @param string $dependencia
+         * @return string
+         */
         public static function getListAniDep($list, $dependencia) {
             $result = "";
             for ($i = 0; $i < count($list); $i++) {
@@ -90,6 +107,11 @@ namespace application\app_aniversario\models {
             return $result;
         }
 
+        /**
+         *  Renderizar el cuerpo de la notificacion individual
+         * @param array $result
+         * @return string
+         */
         public static function getBody($result) {
             $nroRows = count($result);
             $body = "";
@@ -106,6 +128,12 @@ namespace application\app_aniversario\models {
             return $body;
         }
 
+        /**
+         * Renderizar dinamicamente la notificacion individual
+         * @param array $html
+         * @param array $data
+         * @return mixed
+         */
         public static function renderDinamicView($html, $data) {
             foreach ($data as $clave => $valor) {
                 $html = str_replace('{' . $clave . '}', $valor, $html);
@@ -113,6 +141,11 @@ namespace application\app_aniversario\models {
             return $html;
         }
 
+        /**
+         * Obtener una lista de dependencias unicas 
+         * @param array $result
+         * @return array
+         */
         public static function getDependencia($result) {
             $buffer = array();
             $i = 0;
